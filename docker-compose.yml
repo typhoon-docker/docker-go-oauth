@@ -1,0 +1,13 @@
+version: "3"
+
+services:
+  code:
+    build: .
+#    image: golang:1.8
+    volumes:
+      - .:/go/src/app
+#    command: go run main.go
+    working_dir: /go/src/app
+    stdin_open: true
+    tty: true
+    
