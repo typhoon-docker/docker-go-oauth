@@ -2,6 +2,14 @@
 
 
 [[projects]]
+  digest = "1:3fb51807ab996acf337a6372ac98e093e17f14d75edbf2c0d27f650e53d90fac"
+  name = "github.com/imroc/req"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "b355b6f6842fbda1bee879f2846cb79424cad4de"
+  version = "v0.2.3"
+
+[[projects]]
   digest = "1:ecd9aa82687cf31d1585d4ac61d0ba180e42e8a6182b85bd785fcca8dfeefc1b"
   name = "github.com/joho/godotenv"
   packages = ["."]
@@ -83,6 +91,7 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/imroc/req",
     "github.com/joho/godotenv",
     "github.com/labstack/echo",
   ]

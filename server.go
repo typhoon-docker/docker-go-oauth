@@ -5,19 +5,18 @@ import (
 	"os"
 	
 	"net/http"
-	"net/url"
-	"encoding/json"
-	
+
+	"github.com/imroc/req"
 	"github.com/labstack/echo"
 )
 
 
 type Token struct {
-	access_token string
-	expires_at int
-	expires_in int
-	refresh_token string
-	scope string
+	AccessToken string `json:"access_token"`
+	ExpiresAt int `json:"expires_at"`
+	ExpiresIn int `json:"expires_in"`
+	RefreshToken string `json:"refresh_token"`
+	Scope string `json:"scope"`
 }
 
 func init() {
@@ -31,34 +30,30 @@ func main() {
 	})
 	e.GET("/callback", func(c echo.Context) error {
 		// fmt.Println(c.QueryParam("state"))
-		token := Token{} // empty token
 
-		resp, err := http.PostForm(
-			fmt.Sprintf("%soauth/token", os.Getenv("OAUTH_URL")),
-			url.Values {
-				"grant_type": {"authorization_code"},
-				"code": {c.QueryParam("code")},
-				"redirect_uri": {os.Getenv("CALLBACK_URL")},
-				"client_id": {os.Getenv("CLIENT_ID")},
-				"client_secret": {os.Getenv("CLIENT_SECRET")},
-			})
-
-		if err != nil {
-			// handle error
+		body := req.Param {
+			"grant_type": "authorization_code",
+			"code": c.QueryParam("code"),
+			"redirect_uri": os.Getenv("CALLBACK_URL"),
+			"client_id": os.Getenv("CLIENT_ID"),
+			"client_secret": os.Getenv("CLIENT_SECRET"),
 		}
-		defer resp.Body.Close()
-		
-		err = json.NewDecoder(resp.Body).Decode(&token)
+		res, err := req.Post(
+			fmt.Sprintf("%soauth/token", os.Getenv("OAUTH_URL")),
+			body,
+		)
+
 		if err != nil {}
 
-		fmt.Println(token)
-		fmt.Println(token.access_token)
-		fmt.Println(token.expires_at)
-		fmt.Println(token.expires_in)
-		fmt.Println(token.refresh_token)
-		fmt.Println(token.scope)
+		fmt.Println(res)
+		
+		token := Token {} // empty token
+		err = res.ToJSON(&token)
+		if err != nil {
+			panic(err)
+		}
 
-		return c.String(http.StatusOK, "Callback")
+		return c.JSONPretty(http.StatusOK, token, "    ")
 	})
 	e.GET("/login", func(c echo.Context) error {
  		return c.Redirect(http.StatusMovedPermanently, fmt.Sprintf("%soauth/authorize/?redirect_uri=%s&client_id=%s&response_type=code&state=viarezo&scope=default", os.Getenv("OAUTH_URL"), os.Getenv("CALLBACK_URL"), os.Getenv("CLIENT_ID")))
