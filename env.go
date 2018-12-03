@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+
 	"github.com/joho/godotenv"
 )
 
@@ -11,7 +12,7 @@ func LoadEnv() {
 	if "" == env {
 		env = "development"
 	}
-	
+
 	// Load .env
 	godotenv.Load()
 
@@ -24,4 +25,3 @@ func LoadEnv() {
 		godotenv.Load(".env." + env + ".local")
 	}
 }
-
