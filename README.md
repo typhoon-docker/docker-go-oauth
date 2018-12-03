@@ -15,3 +15,9 @@
 Notably:
 * `GO_ENV` defaults to `development`,
 * `.env.local` and `.env.test.local` aren't loaded when `GO_ENV=test` since tests should produce the same results for everyone
+
+# Doc
+
+Oauths:
+- [GitHub](https://developer.github.com/apps/building-oauth-apps/authorizing-oauth-apps/)
+- [ViaRezo](https://auth.viarezo.fr/docs)
