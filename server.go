@@ -28,8 +28,6 @@ func main() {
 		return c.String(http.StatusOK, "Hello, World!")
 	})
 	e.GET("/callback", func(c echo.Context) error {
-		// fmt.Println(c.QueryParam("state"))
-
 		body := req.Param{
 			"grant_type":    "authorization_code",
 			"code":          c.QueryParam("code"),
@@ -38,7 +36,7 @@ func main() {
 			"client_secret": os.Getenv("VIAREZO_CLIENT_SECRET"),
 		}
 		res, err := req.Post(
-			fmt.Sprintf("%soauth/token", os.Getenv("VIAREZO_OAUTH_URL")),
+			fmt.Sprintf("%soauth/token", OAUTH_URL[c.QueryParam("state")]),
 			body,
 		)
 
@@ -55,8 +53,15 @@ func main() {
 
 		return c.JSONPretty(http.StatusOK, token, "    ")
 	})
-	e.GET("/login", func(c echo.Context) error {
+	e.GET("/login_viarezo", func(c echo.Context) error {
 		url, err := GetCode("viarezo")
+		if err != nil {
+		}
+		fmt.Println(url)
+		return c.Redirect(http.StatusMovedPermanently, url)
+	})
+	e.GET("/login_github", func(c echo.Context) error {
+		url, err := GetCode("github")
 		if err != nil {
 		}
 		fmt.Println(url)

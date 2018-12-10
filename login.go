@@ -8,11 +8,18 @@ import (
 	"strings"
 )
 
-func getOauth() ([2]string, map[string]url.Values) {
+var (
+	OAUTH_URL = map[string]string{
+		"viarezo": "https://auth.viarezo.fr/",
+		"github":  "https://github.com/login/",
+	}
+)
+
+func getOauth() ([]string, map[string]url.Values) {
 	viarezo := "viarezo"
 	github := "github"
 
-	oauths := [2]string{viarezo, github}
+	oauths := []string{viarezo, github}
 
 	queries := map[string]url.Values{
 		viarezo: url.Values{
@@ -32,11 +39,11 @@ func GetCode(oauth string) (string, error) {
 		return "", errors.New("oauth doesn't exist")
 	}
 
-	query.Add("redirect_uri", os.Getenv(fmt.Sprintf("%s_CALLBACK_URL", strings.ToUpper(oauth))))
+	query.Add("redirect_uri", os.Getenv("OAUTH_CALLBACK_URL"))
 	query.Add("client_id", os.Getenv(fmt.Sprintf("%s_CLIENT_ID", strings.ToUpper(oauth))))
 	query.Add("state", oauth)
 	return fmt.Sprintf(
 		"%soauth/authorize/?%s",
-		os.Getenv(fmt.Sprintf("%s_OAUTH_URL", strings.ToUpper(oauth))),
+		os.Getenv(OAUTH_URL[oauth]),
 		query.Encode()), nil
 }
