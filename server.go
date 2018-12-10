@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"net/http"
+	"net/url"
 
 	"github.com/imroc/req"
 	"github.com/labstack/echo"
@@ -74,7 +75,10 @@ func main() {
 			return err
 		}
 
-		token, err := res.ToString()
+		tokenRaw, _ := res.ToString()
+
+		query, _ := url.ParseQuery(tokenRaw)
+		token := query["access_token"][0]
 
 		return c.String(http.StatusOK, token)
 	})
